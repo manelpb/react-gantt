@@ -62,17 +62,40 @@ import ReactGantt from 'react-gantt';
 | responsive | Add responsive prop to bootstrap table | no | boolean | false |
 
 
+#### Styles
+
+| Style | Type | Description | 
+| :----------------- |:------------- |:-----: |
+| barHeight | number | bar div height |
+| barStyle | object | sets the bar styling | 
+| tableStyle | object | table styling | 
+| titleStyle | object | bar title styling |
+| headerTitleStyle | object | header text style |
+| timelineStyle | object | timeline style |
+| labelStyle | object | label style |
+| rowStyle | object | row style |
+
 #### Rows
 
 ```
 const rows = [
 	{
 		title: 'Task 1',
-		startDate: moment().set({hour: 0, date: 16, month: 8, year: 2016}).toDate(),
-		climaxDate: moment().set({hour: 0, date: 20, month: 8, year: 2016}).toDate(),
-		endDate: moment().set({hour: 0, date: 28, month: 8, year: 2016}).toDate(),
 		group: 'myTasks',
-		action: () => {console.log('the first one was clicked');}
+		values: [
+			{
+				startDate: moment().set({hour: 0, date: 01, month: 8, year: 2016}).toDate(),
+				climaxDate: moment().set({hour: 0, date: 05, month: 8, year: 2016}).toDate(),
+				endDate: moment().set({hour: 0, date: 15, month: 8, year: 2016}).toDate(),
+				action: () => {console.log('the first one was clicked');}
+			},
+			{
+				startDate: moment().set({hour: 0, date: 16, month: 8, year: 2016}).toDate(),
+				climaxDate: moment().set({hour: 0, date: 20, month: 8, year: 2016}).toDate(),
+				endDate: moment().set({hour: 0, date: 28, month: 8, year: 2016}).toDate(),
+				action: () => {console.log('the first one was clicked');}
+			}
+		]		
 	},
 	...
 ];
@@ -106,4 +129,5 @@ To build, watch and serve the examples (which will also watch the component sour
 
 This project is dual licensed under the MIT or GPL Version 3 licenses.
 
-Copyright (c) 2016 Jam Risser.
+Copyright (c) 2016 Jam Risser
+Copyright (c) 2017 Emmanuel dos Santos
