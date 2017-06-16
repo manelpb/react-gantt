@@ -87,8 +87,8 @@ export default class ReactGantt extends Component {
 
 		return (
 			<div>
-				<div style={Object.assign({}, bar1, this.props.barStyle)} />
-				<div style={Object.assign({}, bar2, this.props.barStyle)} />
+				<div style={Object.assign({}, bar1, this.props.barStyle)}>{row.valueBeforeClimax || ''}</div>
+				<div style={Object.assign({}, bar2, this.props.barStyle)}>{row.valueAfterClimax || ''}</div>
 			</div>
 		);
 	}
