@@ -18,23 +18,27 @@ export default class ReactGantt extends Component {
 		var difference = moment(this.props.options.leftBound).unix();
 		var rightBound = moment(this.props.options.rightBound).unix() - difference;
 		var startDate = moment(row.startDate).unix() - difference;
+		
 		if (startDate < 0) {
 			startDate = 0;
 		} else if (startDate > rightBound) {
 			startDate = rightBound;
 		}
+		
 		var climaxDate = moment(row.climaxDate).unix() - difference;
 		if (climaxDate < 0) {
 			climaxDate = 0;
 		} else if (climaxDate > rightBound) {
 			climaxDate = rightBound;
 		}
+		
 		var endDate = moment(row.endDate).unix() - difference;
 		if (endDate < 0) {
 			endDate = 0;
 		} else if (endDate > rightBound) {
 			endDate = rightBound;
 		}
+		
 		var leftPadWidth = (startDate / rightBound * 100) + '%';
 		var div1Width = ((climaxDate - startDate) / rightBound * 100) + '%';
 		var div2Width = ((endDate - climaxDate) / rightBound * 100) + '%';
@@ -45,12 +49,14 @@ export default class ReactGantt extends Component {
 		} else if (this.props.options.beforeClimaxColor) {
 			div1BackgroundColor = this.props.options.beforeClimaxColor;
 		}
+		
 		var div2BackgroundColor = 'red';
 		if (row.afterClimaxColor) {
 			div2BackgroundColor = row.afterClimaxColor;
 		} else if (this.props.options.afterClimaxColor) {
 			div2BackgroundColor = this.props.options.afterClimaxColor;
 		}
+		
 		var bar1 = {
 			marginTop: '2px',
 			marginBottom: '2px',
@@ -64,6 +70,7 @@ export default class ReactGantt extends Component {
 			borderBottomLeftRadius: '10px',
 			boxShadow: '2px 2px 4px #000000'
 		};
+
 		var bar2 = {
 			marginTop: '2px',
 			marginBottom: '2px',
@@ -77,10 +84,11 @@ export default class ReactGantt extends Component {
 			borderBottomRightRadius: '10px',
 			boxShadow: '2px 2px 4px #000000'
 		};
+
 		return (
 			<div>
-				<div style={bar1} />
-				<div style={bar2} />
+				<div style={Object.assign({}, bar1, this.props.barStyle)} />
+				<div style={Object.assign({}, bar2, this.props.barStyle)} />
 			</div>
 		);
 	}
@@ -88,28 +96,32 @@ export default class ReactGantt extends Component {
 	renderRows() {
 		var rows = [];
 		var labelWidth = '80px';
+
 		if (this.props.options && this.props.options.labelWidth) {
 			labelWidth = this.props.options.labelWidth;
 		}
-		var rowStyle = {
+
+		var rowStyle = Object.assign({}, {
 			cursor: 'pointer'
-		};
-		var titleStyle = {
+		}, this.props.rowStyle);
+
+		var titleStyle = Object.assign({}, {
 			textAlign: 'right',
 			verticalAlign: 'middle',
 			paddingRight: '10px',
-			fontWeight: 'bold'
-		};
-		var timelineStyle = {
-			width: '100%'
-		};
-		if (this.props.options.showBorders !== false) {
-			titleStyle.border = 'solid';
-			timelineStyle.border = 'solid';
-		}
-		var labelStyle = {
+			fontWeight: 'bold',
+			border: (this.props.options.showBorders) ? 'solid' : 0,
+		}, this.props.titleStyle);
+
+		var timelineStyle = Object.assign({}, {
+			width: '100%',
+			border: (this.props.options.showBorders) ? 'solid' : 0,
+		}, this.props.timelineStyle);
+
+		var labelStyle = Object.assign({}, {
 			width: labelWidth
-		};
+		}, this.props.labelStyle);
+
 		if (this.props.rows.length > 0) {
 			for(var i = 0; i < this.props.rows.length; i++) {
 				var rowObject = this.props.rows[i];
@@ -201,18 +213,22 @@ export default class ReactGantt extends Component {
 		var markersCount = Math.round(widthByPixels / 100);
 		var unitByPixels = widthByPixels / count;
 		var maxIntervalWidth = 100;
+
 		if (options.maxIntervalWidth) {
 			maxIntervalWidth = options.maxIntervalWidth;
 		}
+
 		var unitsPerInterval = 1;
 		if (maxIntervalWidth > unitByPixels) {
 			unitsPerInterval = Math.floor(maxIntervalWidth / unitByPixels);
 		}
+
 		var intervalByPixels = unitsPerInterval * unitByPixels;
 		var markersCount = Math.floor(widthByPixels / intervalByPixels);
 		var intervalByPercent = intervalByPixels / widthByPixels * 100;
 		var markers = [];
-		var style = {
+		
+		var style = Object.assign({}, {
 			margin: '0px',
 			padding: '0px',
 			width: intervalByPercent + '%',
@@ -220,41 +236,46 @@ export default class ReactGantt extends Component {
 			borderLeft: 'solid',
 			borderWidth: '1px',
 			paddingLeft: '5px'
-		};
+		}, this.props.headerTitleStyle);
+
 		for (var i = 0; i < markersCount; i++) {
 			var date = moment(difference * 1000);
 			var formattedInterval;
 			switch (type) {
 				case 'years':
 					date.add(i * unitsPerInterval, 'years');
-					formattedInterval=date.format('YYYY MM DD');
+					formattedInterval = date.format('YYYY MM DD');
 					break;
 				case 'months':
 					date.add(i * unitsPerInterval, 'months');
-					formattedInterval=date.format('YYYY MM DD');
+					formattedInterval = date.format('YYYY MM DD');
 					break;
 				case 'days':
 					date.add(i * unitsPerInterval, 'days');
-					formattedInterval=date.format('YYYY MM DD');
+					formattedInterval = date.format('YYYY MM DD');
 					break;
 				case 'hours':
 					date.add(i * unitsPerInterval, 'hours');
-					formattedInterval=date.format('H:mm');
+					formattedInterval = date.format('H:mm');
 				case 'minutes':
 					date.add(i * unitsPerInterval, 'minutes');
-					formattedInterval=date.format('H:mm:ss');
+					formattedInterval = date.format('H:mm:ss');
 				default:
 			}
+
 			if (options && options.intervalFormat){
 				formattedInterval = date.format(options.intervalFormat);
 			}
+
 			var mark = (
 				<div key={i} style={style}>
 					{ formattedInterval }
 				</div>
 			);
+
 			markers.push(mark);
 		}
+
 		return (
 			<div>
 				{markers}
@@ -276,6 +297,7 @@ export default class ReactGantt extends Component {
 	componentDidMount() {
 		this.previousProps = this.props;
 		this.drawScale();
+
 		document.onmousemove = (e) => {
 			this.mouseX = e.pageX;
 			this.mouseY = e.pageY;
@@ -290,16 +312,19 @@ export default class ReactGantt extends Component {
 	}
 
 	render() {
-		var tableStyle = {
+		var tableStyle = Object.assign({}, {
 			width: '100%'
-		};
+		}, this.props.tableStyle);
+
 		var scaleStyle = {
 			width: '100%'
 		};
+
 		var popoverStyle = {
 			position: 'absolute',
 			display: 'none'
 		};
+
 		if (this.bootstrapped) {
 			return (
 				<div id={this.state.tableId}>
@@ -344,10 +369,31 @@ ReactGantt.propTypes = {
 	groups: React.PropTypes.array,
 	options: React.PropTypes.object,
 	rows: React.PropTypes.array,
+
+	/** sets the bar styling */
+	barStyle: React.PropTypes.object,
+
+	/** table styling */
+	tableStyle: React.PropTypes.object,
+
+	/** bar title styling */
+	titleStyle: React.PropTypes.object,
+
+	/** header text style **/
+	headerTitleStyle: React.PropTypes.object,
+
+	/** timeline style **/
+	timelineStyle: React.PropTypes.object,
+
+	/** label style **/
+	labelStyle: React.PropTypes.object,
+
+	/** row style **/
+	rowStyle: React.PropTypes.object,
 };
 
 ReactGantt.defaultProps = {
-	groups: {},
+	groups: [],
 	options: {},
-	rows: {},
+	rows: [],
 };
