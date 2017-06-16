@@ -9258,8 +9258,8 @@ var ReactGantt = (function (_Component) {
 				endDate = rightBound;
 			}
 
-			var leftPadWidth = startDate / rightBound * 100 + '%';
-			var div1Width = (climaxDate - startDate) / rightBound * 100 + '%';
+			var leftPadWidth = startDate / rightBound * 100;
+			var div1Width = (climaxDate - startDate) / rightBound * 100;
 			var div2Width = (endDate - climaxDate) / rightBound * 100 + '%';
 			var rightPadWidth = (rightBound - endDate) / rightBound * 100 + '%';
 			var div1BackgroundColor = 'blue';
@@ -9277,13 +9277,12 @@ var ReactGantt = (function (_Component) {
 			}
 
 			var bar1 = {
-				marginTop: '2px',
-				marginBottom: '2px',
-				marginLeft: leftPadWidth,
-				marginRight: '0px',
+				top: 0,
+				left: leftPadWidth + '%',
+				marginRight: 0,
 				backgroundColor: div1BackgroundColor,
-				width: div1Width,
-				float: 'left',
+				width: div1Width + '%',
+				position: 'absolute',
 				height: '30px',
 				borderTopLeftRadius: '10px',
 				borderBottomLeftRadius: '10px',
@@ -9291,33 +9290,27 @@ var ReactGantt = (function (_Component) {
 			};
 
 			var bar2 = {
-				marginTop: '2px',
-				marginBottom: '2px',
-				marginLeft: '0px',
-				marginRight: rightPadWidth,
+				top: 0,
+				left: div1Width + leftPadWidth + '%',
+				marginRight: 0,
 				backgroundColor: div2BackgroundColor,
 				width: div2Width,
-				float: 'left',
+				position: 'absolute',
 				height: '30px',
 				borderTopRightRadius: '10px',
 				borderBottomRightRadius: '10px',
 				boxShadow: '2px 2px 4px #000000'
 			};
 
-			return _react2['default'].createElement(
+			return [_react2['default'].createElement(
 				'div',
-				null,
-				_react2['default'].createElement(
-					'div',
-					{ style: _extends({}, bar1, this.props.barStyle) },
-					row.valueBeforeClimax || ''
-				),
-				_react2['default'].createElement(
-					'div',
-					{ style: _extends({}, bar2, this.props.barStyle) },
-					row.valueAfterClimax || ''
-				)
-			);
+				{ style: _extends({}, bar1, this.props.barStyle) },
+				row.valueBeforeClimax || ''
+			), _react2['default'].createElement(
+				'div',
+				{ style: _extends({}, bar2, this.props.barStyle) },
+				row.valueAfterClimax || ''
+			)];
 		}
 	}, {
 		key: 'renderRows',
@@ -9338,12 +9331,12 @@ var ReactGantt = (function (_Component) {
 				verticalAlign: 'middle',
 				paddingRight: '10px',
 				fontWeight: 'bold',
-				border: this.props.options.showBorders ? 'solid' : 0
+				border: this.props.options.showBorders ? 'solid' : null
 			}, this.props.titleStyle);
 
 			var timelineStyle = _extends({}, {
 				width: '100%',
-				border: this.props.options.showBorders ? 'solid' : 0
+				border: this.props.options.showBorders ? 'solid' : null
 			}, this.props.timelineStyle);
 
 			var labelStyle = _extends({}, {
@@ -9353,6 +9346,12 @@ var ReactGantt = (function (_Component) {
 			if (this.props.rows.length > 0) {
 				for (var i = 0; i < this.props.rows.length; i++) {
 					var rowObject = this.props.rows[i];
+
+					var elements = [];
+					for (var j = 0; j < rowObject.values.length; j++) {
+						elements.push(this.renderBar(rowObject.values[j]));
+					}
+
 					var row = _react2['default'].createElement(
 						'tr',
 						{ key: i, style: rowStyle, onClick: rowObject.action, onMouseOver: this.showPopup.bind(this, rowObject), onMouseOut: this.hidePopup.bind(this) },
@@ -9368,7 +9367,11 @@ var ReactGantt = (function (_Component) {
 						_react2['default'].createElement(
 							'td',
 							{ style: timelineStyle },
-							this.renderBar(rowObject)
+							_react2['default'].createElement(
+								'div',
+								{ style: { position: 'relative', height: this.props.barHeight } },
+								elements
+							)
 						)
 					);
 					rows.push(row);
@@ -9656,6 +9659,9 @@ ReactGantt.propTypes = {
 	options: _react2['default'].PropTypes.object,
 	rows: _react2['default'].PropTypes.array,
 
+	/** bar div height  **/
+	barHeight: _react2['default'].PropTypes.number,
+
 	/** sets the bar styling */
 	barStyle: _react2['default'].PropTypes.object,
 
@@ -9680,6 +9686,7 @@ ReactGantt.propTypes = {
 
 ReactGantt.defaultProps = {
 	groups: [],
+	barHeight: 50,
 	options: {},
 	rows: []
 };
