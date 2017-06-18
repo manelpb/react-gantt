@@ -9260,7 +9260,7 @@ var ReactGantt = (function (_Component) {
 
 			var leftPadWidth = startDate / rightBound * 100;
 			var div1Width = (climaxDate - startDate) / rightBound * 100;
-			var div2Width = (endDate - climaxDate) / rightBound * 100 + '%';
+			var div2Width = (endDate - climaxDate) / rightBound * 100;
 			var rightPadWidth = (rightBound - endDate) / rightBound * 100 + '%';
 			var div1BackgroundColor = 'blue';
 			if (row.beforeClimaxColor) {
@@ -9286,15 +9286,16 @@ var ReactGantt = (function (_Component) {
 				height: '30px',
 				borderTopLeftRadius: '10px',
 				borderBottomLeftRadius: '10px',
-				boxShadow: '2px 2px 4px #000000'
+				boxShadow: '2px 2px 4px #000000',
+				zIndex: 2
 			};
 
 			var bar2 = {
 				top: 0,
-				left: div1Width + leftPadWidth + '%',
+				left: leftPadWidth + '%',
 				marginRight: 0,
 				backgroundColor: div2BackgroundColor,
-				width: div2Width,
+				width: div1Width + div2Width + '%',
 				position: 'absolute',
 				height: '30px',
 				borderTopRightRadius: '10px',
